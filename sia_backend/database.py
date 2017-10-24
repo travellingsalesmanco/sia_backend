@@ -20,6 +20,12 @@ def config():
         print("USING OPENSHIFT DB")
         # os.environ['OPENSHIFT_DB_*'] variables can be used with databases created
         # with rhc app cartridge add (see /README in this git repo)
+        print(os.environ['OPENSHIFT_MYSQL_DB_HOST'])
+        print(os.environ['OPENSHIFT_MYSQL_DB_PORT'])
+        print(os.environ['OPENSHIFT_MYSQL_DB_NAME'])
+        print(os.environ['OPENSHIFT_MYSQL_DB_USER'])
+        print(os.environ['OPENSHIFT_MYSQL_DB_PASSWORD'])
+
         return {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.environ['OPENSHIFT_MYSQL_DB_NAME'],
