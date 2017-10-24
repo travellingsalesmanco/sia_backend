@@ -13,7 +13,7 @@ class UserProfileInline(admin.StackedInline):
     model = Profile
 
 class UserAdmin(BaseUserAdmin):
-    inlines = [UserProfileInline]
+    inlines = (UserProfileInline, )
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)

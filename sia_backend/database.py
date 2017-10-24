@@ -40,7 +40,7 @@ def config():
     # FOR LOCAL SERVER USE
         return {
                 'ENGINE': 'django.db.backends.mysql',
-                'NAME   ': 'test_db',
+                'NAME': 'test_db',
                 'USER': 'test',
                 'PASSWORD': 'SIA_passw0rd',
                 'HOST': '',

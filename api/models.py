@@ -44,8 +44,8 @@ class TechnicianProfile(models.Model):
     # Stuff specific to Technician goes here
 
     # Attribute: Location of user (stored seperately as lon, lat)
-    lon = models.DecimalField(max_digits=9, decimal_places=6)
-    lat = models.DecimalField(max_digits=9, decimal_places=6)
+    lon = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    lat = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     class Meta:
         abstract = True
 
