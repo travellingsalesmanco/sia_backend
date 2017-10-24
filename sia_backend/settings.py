@@ -25,7 +25,7 @@ SECRET_KEY = 'v-31tn&5kq8&!#t%j5#gcwe=aa*-e0zw)z+vauh#q@$qr(svq*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['db-gateway-siacabindefects.b9ad.pro-us-east-1.openshiftapps.com']
 
 
 # Application definition
