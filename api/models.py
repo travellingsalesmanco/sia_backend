@@ -10,7 +10,7 @@ class BaseProfile(models.Model):
         (1, 'Supervisor'),
         (2, 'Technician')
     )
-    
+
     # Relationship: OneToOne with a User
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
                                 primary_key=True,
@@ -23,8 +23,7 @@ class BaseProfile(models.Model):
         return self.user.username
 
     # Attribute: Type of user
-    user_type = models.IntegerField(max_length=2, null=True,
-                                    choices=USER_TYPES)
+    user_type = models.IntegerField(null=True, choices=USER_TYPES)
 
     # Attribute: User profile pic
     avatar = models.ImageField(null=True, blank=True)
@@ -122,10 +121,10 @@ class Defect(models.Model):
     dateResolved = models.DateTimeField(null=True, blank=True)
 
     # Attribute: Class
-    classCode = models.CharField(choices=CLASS_CODES)
+    classCode = models.CharField(max_length=15, choices=CLASS_CODES)
 
     # Attribute: Category
-    category = models.CharField(choices=CATEGORIES)
+    category = models.CharField(max_length=15, choices=CATEGORIES)
 
     # TODO: Attribute: History
 
@@ -134,7 +133,7 @@ class Defect(models.Model):
 
     # Attribute: Priority of defect (e.g. safety item / HHQ flagged impt)
     # NOTE: 0 - low priority, 2 - high priority
-    priority = models.IntegerField(max_length=2, default=0)
+    priority = models.IntegerField(default=0)
 
 
 class SpareDetail(models.Model):
