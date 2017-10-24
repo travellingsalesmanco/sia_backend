@@ -52,41 +52,79 @@ class TechnicianProfile(models.Model):
 class Profile(TechnicianProfile, SupervisorProfile, PlannerProfile, BaseProfile):
     pass
 
+class Aircraft(models.Model):
+    # Attribute: Aircraft registration ID
+    regn = models.CharField(max_length=10, primary_key=True)
+
+    # Attribute: Aircraft type
+    acType = models.CharField(max_length=10)
+
+    # Attribute: Inbound flight number
+    inbound = models.IntegerField()
+
+    # Attribute: Outbound flight number
+    outbound = models.IntegerField()
+
+    # Attribute: Ground time (ETA/ETD stored seperately)
+    ETA = models.DateTimeField()
+    ETD = models.DateTimeField()
+
+    # Attribute: Aircraft bay Location
+    bay = models.CharField(max_length=50)
+
+class Spare(models.Model):
+    # Attribute: Part ID
+    partID = models.CharField(max_length=20, primary_key=True)
+
+    # Attribute: Part name
+    name = models.CharField(max_length=50)
+
+    # Attribute: Amount in inventory
+    stock = models.PositiveIntegerField(default=10)
+
 class Defect(models.Model):
+    CLASS_CODES = (
+        ('economy', 'Economy'),
+        ('premium', 'Premium'),
+        ('buisness', 'Buisness'),
+        ('first', 'First')
+    )
+    CATEGORIES = (
+        ('seats', 'Seats'),
+        ('galley', 'Galley'),
+        ('lavatory', 'Lavatory')
+    )
+
     # Relationship: ManyToMany with Profile
     techsAssigned = models.ManyToManyField(Profile, related_name='defectsAssigned')
 
-    # Attribute: defect id
+    # Relationship: ManyToOne with Aircraft
+    plane = models.ForeignKey(Aircraft, related_name='defects')
+    
+    # Attribute: defect number
     # id = models.AutoField(primary_key=True)
     # NOTE: This field is defined by default for every model
 
     # Attrubute: Defect header
     header = models.CharField(max_length=150)
 
-    # Attribute: Plane ID
-    plane = models.CharField(max_length=10)
-
-    # Attribute: Aircraft bay Location
-    bayLocation = models.CharField(max_length=50)
-
     # Attribute: Action to take
     action = models.TextField()
 
-    # TODO: Attribute: Spares required
-
     # Attribute: Resolution status
-    closure = models.BooleanField(default=False)
-
-
-    # Attribute: Ground time (i.e. window of work, ETA-ETD stored seperately)
-    ETA = models.DateTimeField()
-    ETD = models.DateTimeField()
+    closed = models.BooleanField(default=False)
 
     # Attribute: Date reported (updated automatically when defect is created)
     dateReported = models.DateTimeField(auto_now_add=True)
 
     # Attribute: Date resolved
     dateResolved = models.DateTimeField(null=True, blank=True)
+
+    # Attribute: Class
+    classCode = models.CharField(choices=CLASS_CODES)
+
+    # Attribute: Category
+    category = models.CharField(choices=CATEGORIES)
 
     # TODO: Attribute: History
 
@@ -96,3 +134,22 @@ class Defect(models.Model):
     # Attribute: Priority of defect (e.g. safety item / HHQ flagged impt)
     # NOTE: 0 - low priority, 2 - high priority
     priority = models.IntegerField(max_length=2, default=0)
+
+
+class SpareDetail(models.Model):
+    # Relationship: ManyToOne with Spare (each SpareDetail is tagged to 1 spare)
+    spare = models.ForeignKey(Spare, related_name='uses')
+
+    # Relationship: ManyToOne with Defect (each SpareDetail is tagged to 1 defect)
+    defect = models.ForeignKey(SpareDetail, related_name='spares')
+
+    # Attribute: Amount required
+    quantity = models.PositiveIntegerField(default=1)
+
+    # Attribute: Stores have been removed from inventory
+    drawn = models.BooleanField(default=False)
+
+    # Custom property: Whether there is stock remaining
+    @property
+    def inStock(self):
+        return (self.spare.stock >= quantity) if not drawn else True

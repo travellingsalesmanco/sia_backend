@@ -16,10 +16,10 @@ class TestProfileModel(TestCase):
         # New user created
         user = User.objects.create(
             username="testing", password="madTest1!")
-        # Check that a RoleProfile instance has been crated
+        # Check that a Profile instance has been crated
         self.assertIsInstance(user.profile, models.Profile)
         # Call the save method of the user to activate the signal
         # again, and check that it doesn't try to create another
-        # profile instace
+        # profile instance
         user.save()
         self.assertIsInstance(user.profile, models.Profile)
