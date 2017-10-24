@@ -100,7 +100,7 @@ class Defect(models.Model):
 
     # Relationship: ManyToOne with Aircraft
     plane = models.ForeignKey(Aircraft, related_name='defects')
-    
+
     # Attribute: defect number
     # id = models.AutoField(primary_key=True)
     # NOTE: This field is defined by default for every model
@@ -141,7 +141,7 @@ class SpareDetail(models.Model):
     spare = models.ForeignKey(Spare, related_name='uses')
 
     # Relationship: ManyToOne with Defect (each SpareDetail is tagged to 1 defect)
-    defect = models.ForeignKey(SpareDetail, related_name='spares')
+    defect = models.ForeignKey(Defect, related_name='spares')
 
     # Attribute: Amount required
     quantity = models.PositiveIntegerField(default=1)
