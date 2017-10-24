@@ -11,13 +11,6 @@ engines = {
 
 
 def config():
-    import os
-    DJ_PROJECT_DIR = os.path.dirname(__file__)
-    BASE_DIR = os.path.dirname(DJ_PROJECT_DIR)
-    WSGI_DIR = os.path.dirname(BASE_DIR)
-    REPO_DIR = os.path.dirname(WSGI_DIR)
-    DATA_DIR = os.environ.get('OPENSHIFT_DATA_DIR', BASE_DIR)
-
     # a setting to determine whether we are running on OpenShift
     ON_OPENSHIFT = False
     if os.environ.has_key('OPENSHIFT_REPO_DIR'):
@@ -28,9 +21,14 @@ def config():
         # os.environ['OPENSHIFT_DB_*'] variables can be used with databases created
         # with rhc app cartridge add (see /README in this git repo)
         return {
-                'ENGINE': 'django.db.backends.mysql',  # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-                'NAME': os.path.join(DATA_DIR, 'appdb')
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ['OPENSHIFT_MYSQL_DB_NAME'],
+        'USER': os.environ['OPENSHIFT_MYSQL_DB_USER'],
+        'PASSWORD': os.environ['OPENSHIFT_MYSQL_DB_PASSWORD'],
+        'HOST': os.environ['OPENSHIFT_MYSQL_DB_HOST'],
+        'PORT': os.environ['OPENSHIFT_MYSQL_DB_PORT'],
         }
+
     else:
         print("USING LOCAL DB")
     # FOR LOCAL SERVER USE
