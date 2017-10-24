@@ -75,16 +75,23 @@ WSGI_APPLICATION = 'sia_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+from . import database
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test_db',
-        'USER': 'test',
-        'PASSWORD': 'SIA_passw0rd',
-        'HOST': '',
-        'PORT': '',
-    }
+    'default': database.config()
 }
+
+# FOR LOCAL SERVER USE
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'test_db',
+#         'USER': 'test',
+#         'PASSWORD': 'SIA_passw0rd',
+#         'HOST': '',
+#         'PORT': '',
+#     }
+# }
 
 
 # Password validation
