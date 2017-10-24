@@ -10,6 +10,7 @@ class BaseProfile(models.Model):
         (1, 'Supervisor'),
         (2, 'Technician')
     )
+    
     # Relationship: OneToOne with a User
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
                                 primary_key=True,
