@@ -25,7 +25,9 @@ SECRET_KEY = 'v-31tn&5kq8&!#t%j5#gcwe=aa*-e0zw)z+vauh#q@$qr(svq*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['db-gateway-siacabindefects.b9ad.pro-us-east-1.openshiftapps.com']
+# NOTE: remove the bottom 3 ALLOWED_HOSTS in deployment
+ALLOWED_HOSTS = ['db-gateway-siacabindefects.b9ad.pro-us-east-1.openshiftapps.com',
+                'localhost', '127.0.0.1', '[::1]']
 
 
 # Application definition
@@ -39,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'api.apps.ApiConfig'
 ]
 
 MIDDLEWARE = [
