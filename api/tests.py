@@ -106,5 +106,12 @@ class TestSerializers(TestCase):
         queryset = self.user.profile.defectsAssigned.filter(closed=False)
         defectSerializer = s.DefectSerializer(queryset, many=True)
         #print(defectSerializer.data)
+
+    def test_newDefect(self):
+        self.newDefect = models.NewDefect.objects.create(plane=self.ac, classCode='first')
+        newDefectSerializer = s.NewDefectSerializer(self.newDefect)
+        self.newSpareDetail = models.NewSpareDetail.objects.create(spare=self.spare, newDefect=self.newDefect)
+        #print(newDefectSerializer.data)
+
     def tearDown(self):
         pass

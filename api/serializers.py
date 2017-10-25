@@ -53,3 +53,21 @@ class DefectSerializer(serializers.ModelSerializer):
                 'dateReported', 'dateResolved', 'closed',
                 'classCode', 'category', 'img', 'priority',
                 'spares', 'updates')
+
+
+# --------------- Raw defects ----------------
+class NewSpareDetailSerializer(serializers.ModelSerializer):
+    spare = SpareSerializer(many=False)
+
+    class Meta:
+        model = models.NewSpareDetail
+        fields = ('spare', 'quantity')
+
+class NewDefectSerializer(serializers.ModelSerializer):
+    plane = AircraftSerializer(many=False)
+    spares = NewSpareDetailSerializer(many=True)
+    class Meta:
+        model = models.NewDefect
+        fields = ('id', 'header', 'description', 'plane',
+                'dateReported', 'classCode', 'category', 'img', 'priority',
+                'spares')

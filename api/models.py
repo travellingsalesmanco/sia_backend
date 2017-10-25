@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 class BaseProfile(models.Model):
     USER_TYPES = (
@@ -57,20 +58,62 @@ class Aircraft(models.Model):
     regn = models.CharField(max_length=10, primary_key=True)
 
     # Attribute: Aircraft type
-    acType = models.CharField(max_length=10)
+    acType = models.CharField(max_length=10, blank=True)
 
     # Attribute: Inbound flight number
-    inbound = models.IntegerField()
+    inbound = models.IntegerField(null=True, blank=True)
 
     # Attribute: Outbound flight number
-    outbound = models.IntegerField()
+    outbound = models.IntegerField(null=True, blank=True)
 
     # Attribute: Ground time (ETA/ETD stored seperately)
-    ETA = models.DateTimeField()
-    ETD = models.DateTimeField()
+    ETA = models.DateTimeField(null=True, blank=True)
+    ETD = models.DateTimeField(null=True, blank=True)
 
     # Attribute: Aircraft bay Location
-    bay = models.CharField(max_length=50)
+    bay = models.CharField(max_length=50, blank=True)
+
+class NewDefect(models.Model):
+    CLASS_CODES = (
+        ('economy', 'Economy'),
+        ('premium', 'Premium'),
+        ('buisness', 'Buisness'),
+        ('first', 'First')
+    )
+    CATEGORIES = (
+        ('seats', 'Seats'),
+        ('galley', 'Galley'),
+        ('lavatory', 'Lavatory')
+    )
+
+    # Relationship: ManyToOne with Aircraft
+    plane = models.ForeignKey(Aircraft, related_name='rawDefects', blank=True)
+
+    # Attribute: defect number
+    # id = models.AutoField(primary_key=True)
+    # NOTE: This field is defined by default for every model
+
+    # Attrubute: Defect header
+    header = models.CharField(max_length=150, blank=True)
+
+    # Attribute: Additional Info
+    description = models.TextField(blank=True)
+
+    # Attribute: Date reported
+    dateReported = models.DateTimeField(default=timezone.now)
+
+    # Attribute: Class
+    classCode = models.CharField(max_length=15, choices=CLASS_CODES, blank=True)
+
+    # Attribute: Category
+    category = models.CharField(max_length=15, choices=CATEGORIES, blank=True)
+
+    # Attribute: Image of Defect
+    img = models.ImageField(upload_to='defects', null=True, blank=True)
+
+    # Attribute: Priority of defect (e.g. safety item / HHQ flagged impt)
+    # NOTE: 0 - low priority, 2 - high priority
+    priority = models.IntegerField(default=0)
 
 class Defect(models.Model):
     CLASS_CODES = (
@@ -104,8 +147,8 @@ class Defect(models.Model):
     # Attribute: Resolution status
     closed = models.BooleanField(default=False)
 
-    # Attribute: Date reported (updated automatically when defect is created)
-    dateReported = models.DateTimeField(auto_now_add=True)
+    # Attribute: Date reported
+    dateReported = models.DateTimeField(default=timezone.now)
 
     # Attribute: Date resolved
     dateResolved = models.DateTimeField(null=True, blank=True)
@@ -133,12 +176,9 @@ class Spare(models.Model):
     # Attribute: Amount in inventory
     stock = models.PositiveIntegerField(default=10)
 
-class SpareDetail(models.Model):
+class SpareDetailBase(models.Model):
     # Relationship: ManyToOne with Spare (each SpareDetail is tagged to 1 spare)
     spare = models.ForeignKey(Spare, related_name='uses')
-
-    # Relationship: ManyToOne with Defect (each SpareDetail is tagged to 1 defect)
-    defect = models.ForeignKey(Defect, related_name='spares')
 
     # Attribute: Amount required
     quantity = models.PositiveIntegerField(default=1)
@@ -150,6 +190,19 @@ class SpareDetail(models.Model):
     @property
     def inStock(self):
         return (self.quantity <= self.spare.stock) if not self.drawn else True
+
+    class Meta:
+        abstract = True
+
+class SpareDetail(SpareDetailBase):
+    # Relationship: ManyToOne with Defect (each SpareDetail is tagged to 1 defect)
+    defect = models.ForeignKey(Defect, related_name='spares')
+
+class NewSpareDetail(SpareDetailBase):
+    # Relationship: ManyToOne with Spare (each SpareDetail is tagged to 1 spare)
+    spare = models.ForeignKey(Spare, related_name='rawUses')
+    # Relationship: ManyToOne with Defect (each SpareDetail is tagged to 1 defect)
+    newDefect = models.ForeignKey(NewDefect, related_name='spares')
 
 class Update(models.Model):
     # Relationship: ManyToOne with Defect
