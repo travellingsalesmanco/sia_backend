@@ -80,7 +80,7 @@ class AssignTechnician(APIView):
 class TechnicianDefects(APIView):
     def get(self, request, format=None):
         username = request.query_params.get('username')
-        queryset = Profile.objects.get(id=defect_id).prefetch_related('techsAssigned').filter(closed=False)
+        queryset = Profile.objects.get(userID=username).defectsAssigned.filter(closed=False)
         serialised_query = s.DefectSerializer(queryset, many=True)
         return Response(serialised_query.data)
 
