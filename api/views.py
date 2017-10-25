@@ -26,7 +26,7 @@ class TechnicianProfile(APIView):
 class OtherProfile(APIView):
     def get(self, request, format=None):
         username = request.query_params.get('username')
-        queryset = m.Profile.objects.get(userID=username)
+        queryset = m.Profile.objects.get(user__username=username)
         serialised_query = s.ProfileSerializer(queryset)
         return Response(serialised_query.data)
 
@@ -35,7 +35,7 @@ class OtherProfile(APIView):
 class TechProfilefromID(APIView):
     def get(self, request, format=None):
         username = request.query_params.get('username')
-        queryset = m.Profile.objects.get(userID=username)
+        queryset = m.Profile.objects.get(user__username=username)
         serialised_query = s.TechnicianSerializer(queryset)
         return Response(serialised_query.data)
 
@@ -80,7 +80,7 @@ class AllDefects(APIView):
 class TechnicianDefects(APIView):
     def get(self, request, format=None):
         username = request.query_params.get('username')
-        queryset = m.Profile.objects.get(userID=username).defectsAssigned.filter(closed=False)
+        queryset = m.Profile.objects.get(user__username=username).defectsAssigned.filter(closed=False)
         serialised_query = s.DefectSerializer(queryset, many=True)
         return Response(serialised_query.data)
 
