@@ -1,0 +1,177 @@
+-- -- -- -- -- -- -- -- -- -- -- -- -- - Aircraft Data-- -- -- -- -- -- -- -- -- -- -- -- -- -
+Content - Type: application / json
+
+{
+	"regn": "SWT",
+	"acType": "77W",
+	"inbound": 238,
+	"outbound": 237,
+	"ETA": "2017-10-26T12:00:00Z",
+	"ETD": "2017-10-26T16:00:00Z",
+	"bay": "A13/A13/C20"
+}
+
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- - Spare Data-- -- -- -- -- -- -- -- -- -- -- -- -- -
+Content - Type: application / json
+
+{
+	"partID": "XYZ123",
+	"name": "chair",
+	"stock": 10
+}
+-- -- -- -- -- -- -- -- -- -- -- -- -- - Spare Detail Data-- -- -- -- -- -- -- -- -- -- -- -- -- -
+Content - Type: application / json
+
+{
+	"spare":
+	{
+		"partID": "XYZ123",
+		"name": "chair",
+		"stock": 10
+	},
+	"quantity": 1,
+	"drawn": false
+}
+
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- - User Data-- -- -- -- -- -- -- -- -- -- -- -- -- -
+Content - Type: application / json
+
+{
+	"username": "testing",
+	"first_name": "John",
+	"last_name": "Alpaca",
+	"last_login": null
+}
+
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- - Normal Profile Data-- -- -- -- -- -- -- -- -- -- -- -- -- -
+Content - Type: application / json
+
+{
+	"user":
+	{
+		"username": "testing",
+		"first_name": "John",
+		"last_name": "Alpaca",
+		"last_login": null
+	},
+	"user_type": 2,
+	"avatar": null
+}
+-- -- -- -- -- -- -- -- -- -- -- -- -- - Technician Profile Data-- -- -- -- -- -- -- -- -- -- -- -- -- -
+Content - Type: application / json
+
+{
+	"user":
+	{
+		"username": "testing",
+		"first_name": "John",
+		"last_name": "Alpaca",
+		"last_login": null
+	},
+	"user_type": 2,
+	"avatar": null,
+	"lon": null,
+	"lat": null
+}
+
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- - Action Update Data-- -- -- -- -- -- -- -- -- -- -- -- -- -
+Content - Type: application / json
+
+{
+	"author":
+	{
+		"user":
+		{
+			"username": "testing",
+			"first_name": "John",
+			"last_name": "Alpaca",
+			"last_login": null
+		},
+		"user_type": 2,
+		"avatar": null
+	},
+	"details": "Whole chair broken, need extra parts",
+	"created": "2017-10-25T16:19:59.488013Z"
+}
+
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- - Defect Data-- -- -- -- -- -- -- -- -- -- -- -- -- -
+Content - Type: application / json
+
+{
+	"header": "SEAT 24D LEGREST INOP",
+	"description": "",
+	"plane":
+	{
+		"regn": "SWT",
+		"acType": "77W",
+		"inbound": 238,
+		"outbound": 237,
+		"ETA": "2017-10-26T12:00:00Z",
+		"ETD": "2017-10-26T16:00:00Z",
+		"bay": "A13/A13/C20"
+	},
+	"techsAssigned": [
+	{
+		"user":
+		{
+			"username": "testing",
+			"first_name": "John",
+			"last_name": "Alpaca",
+			"last_login": null
+		},
+		"user_type": 2,
+		"avatar": null,
+		"lon": null,
+		"lat": null
+	}],
+	"dateReported": "2017-10-25T16:19:59.463003Z",
+	"dateResolved": null,
+	"closed": false,
+	"classCode": "premium",
+	"category": "seats",
+	"img": null,
+	"priority": 0,
+	"spares": [
+	{
+		"spare":
+		{
+			"partID": "XYZ123",
+			"name": "chair",
+			"stock": 10
+		},
+		"quantity": 1,
+		"drawn": false
+	},
+	{
+		"spare":
+		{
+			"partID": "XYZ123",
+			"name": "chair",
+			"stock": 10
+		},
+		"quantity": 11,
+		"drawn": false
+	}],
+	"updates": [
+	{
+		"author":
+		{
+			"user":
+			{
+				"username": "testing",
+				"first_name": "John",
+				"last_name": "Alpaca",
+				"last_login": null
+			},
+			"user_type": 2,
+			"avatar": null
+		},
+		"details": "Whole chair broken, need extra parts",
+		"created": "2017-10-25T16:19:59.488013Z"
+	}]
+}

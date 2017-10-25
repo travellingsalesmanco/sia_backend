@@ -49,7 +49,7 @@ class DefectSerializer(serializers.ModelSerializer):
     updates = UpdateSerializer(many=True)
     class Meta:
         model = models.Defect
-        fields = ('plane', 'techsAssigned',
-                'header', 'description', 'dateReported',
+        fields = ('header', 'description', 'plane', 'techsAssigned',
+                'dateReported', 'dateResolved', 'closed',
                 'classCode', 'category', 'img', 'priority',
                 'spares', 'updates')

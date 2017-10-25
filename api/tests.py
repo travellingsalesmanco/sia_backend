@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.test import TestCase
 
+from django.http import JsonResponse
 # Create your tests here.
 
 from django.contrib.auth import get_user_model
@@ -58,29 +59,52 @@ class TestSerializers(TestCase):
 
     def test_serializer(self):
         acSerializer = s.AircraftSerializer(self.ac)
-        print(acSerializer.data)
+        print("---------------------------Aircraft Data---------------------------")
+        print(JsonResponse(acSerializer.data, safe=False))
+        print("\n")
         spareSerializer = s.SpareSerializer(self.spare)
-        print(spareSerializer.data)
+        print("---------------------------Spare Data---------------------------")
+        print(JsonResponse(spareSerializer.data, safe=False))
         sDet = s.SpareDetailSerializer(self.spareDetail)
-        print(sDet.data)
+        print("---------------------------Spare Detail Data---------------------------")
+        print(JsonResponse(sDet.data, safe=False))
+        print("\n")
         userSerializer = s.UserSerializer(self.user)
-        print(userSerializer.data)
+        print("---------------------------User Data---------------------------")
+        print(JsonResponse(userSerializer.data, safe=False))
+        print("\n")
         profileSerializer = s.ProfileSerializer(self.user.profile)
-        print(profileSerializer.data)
+        print("---------------------------Normal Profile Data---------------------------")
+        print(JsonResponse(profileSerializer.data, safe=False))
         techProfileSerializer = s.TechnicianSerializer(self.user.profile)
-        print(techProfileSerializer.data)
+        print("---------------------------Technician Profile Data---------------------------")
+        print(JsonResponse(techProfileSerializer.data, safe=False))
+        print("\n")
+        #defectSerializer = s.DefectSerializer(self.defect)
 
-        defectSerializer = s.DefectSerializer(self.defect)
-        print(defectSerializer.data)
-        print("------")
+        #print(defectSerializer.data)
         self.defect.techsAssigned.add(self.user.profile)
         self.testUpdate = models.Update.objects.create(defect=self.defect, author=self.user.profile,
                                                     details="Whole chair broken, need extra parts")
         updateSerializer = s.UpdateSerializer(self.testUpdate)
-        print(updateSerializer.data)
-        print("------")
+        print("---------------------------Action Update Data---------------------------")
+        print(JsonResponse(updateSerializer.data, safe=False))
+        print("\n")
+        print("---------------------------Defect Data---------------------------")
         defectSerializer = s.DefectSerializer(self.defect)
-        print(defectSerializer.data)
+        print(JsonResponse(defectSerializer.data, safe=False))
 
+    def test_queryset(self):
+        self.defect.techsAssigned.add(self.user.profile)
+        self.anotherDefect = models.Defect.objects.create(plane=self.ac, header="SEAT 24D LEGREST INOP",
+                                    classCode='premium', category='seats')
+        self.anotherDefect.techsAssigned.add(self.user.profile)
+        self.closedDefect = models.Defect.objects.create(plane=self.ac, header="HOHOHOHO",
+                                    classCode='premium', category='seats', closed=True)
+        self.closedDefect.techsAssigned.add(self.user.profile)
+        #queryset = [defect for defect in self.user.profile.defectsAssigned.all() if defect.closed==False]
+        queryset = self.user.profile.defectsAssigned.filter(closed=False)
+        defectSerializer = s.DefectSerializer(queryset, many=True)
+        #print(defectSerializer.data)
     def tearDown(self):
         pass
