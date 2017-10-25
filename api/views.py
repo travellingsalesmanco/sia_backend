@@ -6,7 +6,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from api import models
+from api import models as m
 from api import serializers as s
 import datetime
 
@@ -18,7 +18,7 @@ import datetime
 class TechnicianProfile(APIView):
     def get(self, request, format=None):
         username = request.query_params.get('username')
-        queryset = Profile.objects.get(userID=username)
+        queryset = m.Profile.objects.get(userID=username)
         serialised_query = s.TechnicianSerializer(queryset)
         return Response(serialised_query.data)
 
@@ -26,7 +26,7 @@ class TechnicianProfile(APIView):
 class OtherProfile(APIView):
     def get(self, request, format=None):
         username = request.query_params.get('username')
-        queryset = Profile.objects.get(userID=username)
+        queryset = m.Profile.objects.get(userID=username)
         serialised_query = s.ProfileSerializer(queryset)
         return Response(serialised_query.data)
 
@@ -35,7 +35,7 @@ class OtherProfile(APIView):
 class TechProfilefromID(APIView):
     def get(self, request, format=None):
         username = request.query_params.get('username')
-        queryset = Profile.objects.get(userID=username)
+        queryset = m.Profile.objects.get(userID=username)
         serialised_query = s.TechnicianSerializer(queryset)
         return Response(serialised_query.data)
 
@@ -43,7 +43,7 @@ class TechProfilefromID(APIView):
 class DefectInfofromID(APIView):
     def get(self, request, format=None):
         defect_id = request.data["id"]
-        queryset = Defect.objects.get(id=defect_id)
+        queryset = m.Defect.objects.get(id=defect_id)
         serialised_query = s.DefectSerializer(queryset)
         return Response(serialised_query.data)
 
@@ -51,13 +51,13 @@ class DefectInfofromID(APIView):
 
 class TechnicianList(APIView):
     def get(self, request, format=None):
-        queryset = Profile.objects.filter(user_type=2)
+        queryset = m.Profile.objects.filter(user_type=2)
         serialised_query = s.TechnicianSerializer(queryset, many=True)
         return Response(serialised_query.data)
 
 class AllDefects(APIView):
     def get(self, request, format=None):
-        queryset = Defect.objects.filter(closed=False)
+        queryset = m.Defect.objects.filter(closed=False)
         serialised_query = s.DefectSerializer(queryset, many=True)
         return Response(serialised_query.data)
 
@@ -80,7 +80,7 @@ class AllDefects(APIView):
 class TechnicianDefects(APIView):
     def get(self, request, format=None):
         username = request.query_params.get('username')
-        queryset = Profile.objects.get(userID=username).defectsAssigned.filter(closed=False)
+        queryset = m.Profile.objects.get(userID=username).defectsAssigned.filter(closed=False)
         serialised_query = s.DefectSerializer(queryset, many=True)
         return Response(serialised_query.data)
 
