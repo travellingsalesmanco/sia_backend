@@ -26,7 +26,7 @@ class BaseProfile(models.Model):
     user_type = models.IntegerField(null=True, choices=USER_TYPES)
 
     # Attribute: User profile pic
-    avatar = models.ImageField(null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars', null=True, blank=True)
     class Meta:
         abstract = True
 
@@ -72,16 +72,6 @@ class Aircraft(models.Model):
     # Attribute: Aircraft bay Location
     bay = models.CharField(max_length=50)
 
-class Spare(models.Model):
-    # Attribute: Part ID
-    partID = models.CharField(max_length=20, primary_key=True)
-
-    # Attribute: Part name
-    name = models.CharField(max_length=50)
-
-    # Attribute: Amount in inventory
-    stock = models.PositiveIntegerField(default=10)
-
 class Defect(models.Model):
     CLASS_CODES = (
         ('economy', 'Economy'),
@@ -108,8 +98,8 @@ class Defect(models.Model):
     # Attrubute: Defect header
     header = models.CharField(max_length=150)
 
-    # Attribute: Action to take
-    action = models.TextField()
+    # Attribute: Additional Info
+    description = models.TextField(blank=True)
 
     # Attribute: Resolution status
     closed = models.BooleanField(default=False)
@@ -126,15 +116,22 @@ class Defect(models.Model):
     # Attribute: Category
     category = models.CharField(max_length=15, choices=CATEGORIES)
 
-    # TODO: Attribute: History
-
     # Attribute: Image of Defect
-    img = models.ImageField(null=True, blank=True)
+    img = models.ImageField(upload_to='defects', null=True, blank=True)
 
     # Attribute: Priority of defect (e.g. safety item / HHQ flagged impt)
     # NOTE: 0 - low priority, 2 - high priority
     priority = models.IntegerField(default=0)
 
+class Spare(models.Model):
+    # Attribute: Part ID
+    partID = models.CharField(max_length=20, primary_key=True)
+
+    # Attribute: Part name
+    name = models.CharField(max_length=50)
+
+    # Attribute: Amount in inventory
+    stock = models.PositiveIntegerField(default=10)
 
 class SpareDetail(models.Model):
     # Relationship: ManyToOne with Spare (each SpareDetail is tagged to 1 spare)
@@ -152,4 +149,17 @@ class SpareDetail(models.Model):
     # Custom property: Whether there is stock remaining
     @property
     def inStock(self):
-        return (self.spare.stock >= quantity) if not drawn else True
+        return (self.quantity <= self.spare.stock) if not self.drawn else True
+
+class Update(models.Model):
+    # Relationship: ManyToOne with Defect
+    defect = models.ForeignKey(Defect, related_name='updates')
+
+    # Relationship: ManyToOne with Profile
+    author = models.ForeignKey(Profile, related_name='history')
+
+    # Attribute: Description
+    details = models.TextField()
+
+    # Attribute: Time stamp created
+    created = models.DateTimeField(auto_now_add=True)
