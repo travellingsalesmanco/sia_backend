@@ -42,7 +42,7 @@ class TechProfilefromID(APIView):
 #Request with id
 class DefectInfofromID(APIView):
     def get(self, request, format=None):
-        defect_id = request.data["id"]
+        defect_id = request.query_params.get('id')
         queryset = m.Defect.objects.get(id=defect_id)
         serialised_query = s.DefectSerializer(queryset)
         return Response(serialised_query.data)
