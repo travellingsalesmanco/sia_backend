@@ -1,6 +1,21 @@
 from django.conf.urls import url
 from rest_framework.authtoken import views as drf_views
 
+from api import views as api_views
+
 urlpatterns = [
+#GET REQUESTS
     url(r'^auth$', drf_views.obtain_auth_token, name='auth'),
+    url(r'^alldefects$', api_views.AllDefects.as_view(), name='alldefects'),
+    url(r'^alltechs$', api_views.TechnicianList.as_view(), name='alltechs'),
+
+    url(r'^defectinfo$', api_views.DefectInfofromID.as_view(), name='defectinfo'),
+    url(r'^techinfo$', api_views.TechProfilefromID.as_view(), name='techinfo'),
+
+    url(r'^techdefects$', api_views.TechnicianDefects.as_view(), name='defectinfo'),
+
+#POST REQUESTS
+    url(r'^updatedefect$', api_views.UpdateDefect.as_view(), name='updatedefect'),
+    url(r'^createdefect$', api_views.CreateDefect.as_view(), name='createdefect'),
+
 ]

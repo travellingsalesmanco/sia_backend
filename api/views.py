@@ -62,15 +62,15 @@ class AllDefects(APIView):
         return Response(serialised_query.data)
 
 
-class AssignTechnician(APIView):
-    def post(self, request, format=None):
-        username = request.data.get('username')
-        defect_id = request.data.get('id')
-        Technician = Profile.objects.get(userID=username)
-        Defect = Profile.objects.get(id=defect_id)
-        Defect.techsAssigned.add(Technician)
-        Defect.save()
-        return Response({'received data': request.data})
+# class AssignTechnician(APIView):
+#     def post(self, request, format=None):
+#         username = request.data.get('username')
+#         defect_id = request.data.get('id')
+#         Technician = Profile.objects.get(userID=username)
+#         Defect = Profile.objects.get(id=defect_id)
+#         Defect.techsAssigned.add(Technician)
+#         Defect.save()
+#         return Response({'received data': request.data})
 
 
 # ------------------------------- TECHNICIAN APIS -------------------------------------------------------------##
@@ -84,20 +84,33 @@ class TechnicianDefects(APIView):
         serialised_query = s.DefectSerializer(queryset, many=True)
         return Response(serialised_query.data)
 
-#Request with username, lon, lat
-class TechUpdateLocation(APIView):
+# #Request with username, lon, lat
+# class TechUpdateLocation(APIView):
+#     def post(self, request, format=None):
+#         lon = request.data.get('lon')
+#         lat = request.data.get('lat')
+#         username = request.data.get('username')
+#         technician = Profile.objects.get(userID=username)
+#         technician.lon = lon
+#         technician.lat = lat
+#         technician.save()
+#         return Response({'received data': request.data})
+
+
+# ------------------------------ POST API -----------------------------------------------------------------------------#
+class CreateDefect(APIView):
     def post(self, request, format=None):
-        lon = request.data.get('lon')
-        lat = request.data.get('lat')
-        username = request.data.get('username')
-        technician = Profile.objects.get(userID=username)
-        technician.lon = lon
-        technician.lat = lat
-        technician.save()
-        return Response({'received data': request.data})
+        serializer = s.DefectSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-#def techUpdate():
 
-#def supUpdate():
-
-#def plannerUpdate():
+class UpdateDefect(APIView):
+    def post(self, request, format=None):
+        serializer = s.DefectSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
