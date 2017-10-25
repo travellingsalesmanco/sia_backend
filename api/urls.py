@@ -6,6 +6,10 @@ from api import views as api_views
 urlpatterns = [
 #GET REQUESTS
     url(r'^auth$', drf_views.obtain_auth_token, name='auth'),
+    url(r'^techprofile$', api_views.TechnicianProfile, name='techprofile'),
+    url(r'^profile$', api_views.OtherProfile, name='profile'),
+
+
     url(r'^alldefects$', api_views.AllDefects.as_view(), name='alldefects'),
     url(r'^alltechs$', api_views.TechnicianList.as_view(), name='alltechs'),
 

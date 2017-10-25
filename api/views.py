@@ -18,7 +18,7 @@ import datetime
 class TechnicianProfile(APIView):
     def get(self, request, format=None):
         username = request.query_params.get('username')
-        queryset = m.Profile.objects.get(userID=username)
+        queryset = m.Profile.objects.get(user__username=username)
         serialised_query = s.TechnicianSerializer(queryset)
         return Response(serialised_query.data)
 
@@ -66,7 +66,7 @@ class AllDefects(APIView):
 #     def post(self, request, format=None):
 #         username = request.data.get('username')
 #         defect_id = request.data.get('id')
-#         Technician = Profile.objects.get(userID=username)
+#         Technician = Profile.objects.get(user__username=username)
 #         Defect = Profile.objects.get(id=defect_id)
 #         Defect.techsAssigned.add(Technician)
 #         Defect.save()
@@ -90,13 +90,13 @@ class TechnicianDefects(APIView):
 #         lon = request.data.get('lon')
 #         lat = request.data.get('lat')
 #         username = request.data.get('username')
-#         technician = Profile.objects.get(userID=username)
+#         technician = Profile.objects.get(user__username=username)
 #         technician.lon = lon
 #         technician.lat = lat
 #         technician.save()
 #         return Response({'received data': request.data})
 
-
+#TODO: input defects (from planner) and updating of defects from all parties
 # ------------------------------ POST API -----------------------------------------------------------------------------#
 class CreateDefect(APIView):
     def post(self, request, format=None):
@@ -114,3 +114,7 @@ class UpdateDefect(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class CreateRawDefect(APIView):
+#     def post(self, request, format=None):
