@@ -107,12 +107,8 @@ class UpdateDefect(APIView):
 
 class AddUpdate(APIView):
     def post(self, request, format=None):
-        request_data = request.data
-        serializer = s.InputUpdateSerializer(data={'author': request_data["u_id"],
-                                              'details': request_data["details"]})
+        serializer = s.InputUpdateSerializer(data=request.data)
         if serializer.is_valid():
-            Defect = m.Defect.objects.get(id=request_data["d_id"])
-            serializer.defect.add(Defect)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
