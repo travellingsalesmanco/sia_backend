@@ -55,3 +55,62 @@ Server Setup
 ```
 (env) $ python manage.py runserver
 ```
+
+APIs
+---------
+
+`GET /gettech?id=<id>`          Get technician's profile
+`GET /getuser?id=<id>`          Get planner/supervisor's profile
+
+`GET /defects`                  Get all defects
+`GET /tech`                     Get all technicians
+
+`GET /tech?id=<id>`             Get technician's profile from id (similar to `gettech`)
+`GET /defect?id=<id>`           Get defect information from id
+
+`GET /techdefects?id=<id>`      Get defects under technician (identified by id)
+`GET /techhistory?id=<id>`      Get last 10 completed defects under technician (identified by id)
+
+
+`POST /createdefect`            Post new defect
+```
+Form required fields:
+header
+classCode
+category
+plane
+```
+
+`PATCH /updatedefect/<id>`      Patch (update) existing defect (identified by id)
+```
+For editing same level fields such as `closed`, `priority`, `description`
+```
+
+`PUT/DELETE /techassign/<id>`       Add or delete techs assigned to defect (identified by id)
+```
+Form:
+id  (<tech>id)
+```
+
+`PUT/DELETE /update/<id>`       Add or delete update on defect (identified by id)
+```
+Form:
+(if DELETE)
+id  (<update>id)
+(if PUT)
+author (<user>id)
+details(message)
+```
+
+`PUT/DELETE /spare/<id>`       Add or delete spares on defect (identified by id)
+```
+Form:
+(if DELETE or editing existing spare in defect using PUT)
+id
+(if PUT with new spare in defect)
+spare (part id)
+quantity (quantity needed)
+drawn (True or False)
+```
+
+

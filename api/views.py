@@ -130,15 +130,18 @@ class AddOrDeleteUpdate(APIView):
             raise Http404
     def put(self, request, pk, format=None):
         defect = self.get_defect(pk)
-        serializer = s.InputUpdateSerializer(defect, data=request.data)
+        serializer = s.InputUpdateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            defect.updates.add(serializer)
+            defect.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     def delete(self, request, pk, format=None):
         defect = self.get_defect(pk)
         update = self.get_update(request.data.get('id'))
         defect.updates.remove(update)
+        defect.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -163,6 +166,7 @@ class AddOrDeleteTechnician(APIView):
         defect = self.get_object(pk)
         technician = self.get_technician(request.data.get('id'))
         defect.techsAssigned.remove(technician)
+        defect.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -177,16 +181,20 @@ class AddOrDeleteSpare(APIView):
             return m.SpareDetail.objects.get(id=pk)
         except m.Update.DoesNotExist:
             raise Http404
-    def put(self, request, format=None):
+    def put(self, request, pk, format=None):
+        defect = self.get_defect(pk)
         serializer = s.InputSpareDetailSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            defect.spares.add(serializer)
+            defect.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     def delete(self, request, pk, format=None):
         defect = self.get_defect(pk)
         spare = self.get_spare(request.data.get('id'))
         defect.spares.remove(spare)
+        defect.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
