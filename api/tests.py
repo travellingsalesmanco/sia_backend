@@ -15,7 +15,7 @@ class TestProfileModel(TestCase):
 
     def test_profile_creation(self):
         User = get_user_model()
-        # New user created
+        # Raw user created
         user = User.objects.create(
             username="testing", password="madTest1!")
         # Check that a Profile instance has been crated
@@ -80,7 +80,7 @@ class TestSerializers(TestCase):
         print("---------------------------Technician Profile Data---------------------------")
         print(JsonResponse(techProfileSerializer.data, safe=False))
         print("\n")
-        #defectSerializer = s.DefectSerializer(self.defect)
+        #defectSerializer = s.OutputDefectSerializer(self.defect)
 
         #print(defectSerializer.data)
         self.defect.techsAssigned.add(self.user.profile)
@@ -91,7 +91,7 @@ class TestSerializers(TestCase):
         print(JsonResponse(updateSerializer.data, safe=False))
         print("\n")
         print("---------------------------Defect Data---------------------------")
-        defectSerializer = s.DefectSerializer(self.defect)
+        defectSerializer = s.OutputDefectSerializer(self.defect)
         print(JsonResponse(defectSerializer.data, safe=False))
 
     def test_queryset(self):
@@ -104,14 +104,14 @@ class TestSerializers(TestCase):
         self.closedDefect.techsAssigned.add(self.user.profile)
         #queryset = [defect for defect in self.user.profile.defectsAssigned.all() if defect.closed==False]
         queryset = self.user.profile.defectsAssigned.filter(closed=False)
-        defectSerializer = s.DefectSerializer(queryset, many=True)
+        defectSerializer = s.OutputDefectSerializer(queryset, many=True)
         #print(defectSerializer.data)
 
-    def test_newDefect(self):
-        self.newDefect = models.NewDefect.objects.create(plane=self.ac, classCode='first')
-        newDefectSerializer = s.NewDefectSerializer(self.newDefect)
-        self.newSpareDetail = models.NewSpareDetail.objects.create(spare=self.spare, newDefect=self.newDefect)
-        #print(newDefectSerializer.data)
+    def test_rawDefect(self):
+        self.rawDefect = models.RawDefect.objects.create(plane=self.ac, classCode='first')
+        rawDefectListSerializer = s.RawDefectListSerializer(self.rawDefect)
+        self.rawSpareDetail = models.RawSpareDetail.objects.create(spare=self.spare, rawDefect=self.rawDefect)
+        #print(rawDefectListSerializer.data)
 
     def tearDown(self):
         pass

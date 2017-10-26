@@ -73,7 +73,7 @@ class Aircraft(models.Model):
     # Attribute: Aircraft bay Location
     bay = models.CharField(max_length=50, blank=True)
 
-class NewDefect(models.Model):
+class RawDefect(models.Model):
     CLASS_CODES = (
         ('economy', 'Economy'),
         ('premium', 'Premium'),
@@ -129,7 +129,7 @@ class Defect(models.Model):
     )
 
     # Relationship: ManyToMany with Profile
-    techsAssigned = models.ManyToManyField(Profile, related_name='defectsAssigned')
+    techsAssigned = models.ManyToManyField(Profile, related_name='defectsAssigned', blank=True)
 
     # Relationship: ManyToOne with Aircraft
     plane = models.ForeignKey(Aircraft, related_name='defects')
@@ -198,11 +198,11 @@ class SpareDetail(SpareDetailBase):
     # Relationship: ManyToOne with Defect (each SpareDetail is tagged to 1 defect)
     defect = models.ForeignKey(Defect, related_name='spares')
 
-class NewSpareDetail(SpareDetailBase):
+class RawSpareDetail(SpareDetailBase):
     # Relationship: ManyToOne with Spare (each SpareDetail is tagged to 1 spare)
     spare = models.ForeignKey(Spare, related_name='rawUses')
     # Relationship: ManyToOne with Defect (each SpareDetail is tagged to 1 defect)
-    newDefect = models.ForeignKey(NewDefect, related_name='spares')
+    rawDefect = models.ForeignKey(RawDefect, related_name='spares')
 
 class Update(models.Model):
     # Relationship: ManyToOne with Defect
