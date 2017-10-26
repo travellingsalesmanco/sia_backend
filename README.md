@@ -63,7 +63,7 @@ APIs
 `GET /getuser?id=<id>`          Get planner/supervisor's profile
 
 `GET /defects`                  Get all defects
-`GET /tech`                     Get all technicians
+`GET /techs                     Get all technicians
 
 `GET /tech?id=<id>`             Get technician's profile from id (similar to `gettech`)
 `GET /defect?id=<id>`           Get defect information from id
