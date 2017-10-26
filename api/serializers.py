@@ -49,6 +49,10 @@ class UpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Update
         fields = ('author', 'details', 'created')
+class InputUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Update
+        fields = ('author', 'details', 'created')
 
 class OutputDefectSerializer(serializers.ModelSerializer):
     """ Full details of defects, for viewing """
