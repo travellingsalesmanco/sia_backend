@@ -16,7 +16,8 @@ urlpatterns = [
     url(r'^defect$', api_views.DefectInfofromID.as_view(), name='defectinfo'),
     url(r'^tech$', api_views.TechProfilefromID.as_view(), name='techinfo'),
 
-    url(r'^techdefects$', api_views.TechnicianDefects.as_view(), name='defectinfo'),
+    url(r'^techdefects$', api_views.TechnicianDefects.as_view(), name='techdefects'),
+    url(r'^techhistory$', api_views.TechnicianHistory.as_view(), name='techhistory'),
 
 #POST REQUESTS
     url(r'^createdefect$', api_views.CreateOrUpdateDefect.as_view(), name='createdefect'),

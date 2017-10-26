@@ -48,7 +48,7 @@ class UpdateSerializer(serializers.ModelSerializer):
     author = ProfileSerializer()
     class Meta:
         model = models.Update
-        fields = ('author', 'details', 'created')
+        fields = ('id', 'author', 'details', 'created')
 class InputUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Update
