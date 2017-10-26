@@ -110,7 +110,7 @@ class InputDefectSerializer(serializers.ModelSerializer):
 
         # Update the rest of the data
         models.Defect.objects.filter(id=instance.id).update(**validated_data)
-
+        return instance
         # Non of the updates here call the .save() method, if we use a post_save
         # signal, include the following line to trigger the signals at the end
         # of an update:
