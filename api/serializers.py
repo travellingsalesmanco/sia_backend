@@ -73,7 +73,7 @@ class InputDefectSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Defect
         fields = ('header', 'classCode', 'category', 'plane', # Required fields
-                'description', 'techsAssigned',
+                'description', #'techsAssigned',
                 'dateReported', 'dateResolved', 'closed', 'img', 'priority',
                 'spares')
 
@@ -93,7 +93,7 @@ class InputDefectSerializer(serializers.ModelSerializer):
             pk = spare_data.get('id', None)
             if pk is not None:
                 try:
-                    sd = SpareDetail.objects.get(id=pk)
+                    sd = models.SpareDetail.objects.get(id=pk)
                     sd.spare = spare_data.get('spare', sd.spare)
                     sd.quantity = spare_data.get('quantity', sd.quantity)
                     sd.drawn = spare_data.get('drawn', sd.drawn)
@@ -102,14 +102,14 @@ class InputDefectSerializer(serializers.ModelSerializer):
                     print("No such spare detail.")
             # Otherwise create a new SpareDetail
             else:
-                SpareDetail.objects.create(defect=defect, **spare_data)
-        # Handle techsAssigned
-        techs_data = validated_data.pop('techsAssigned', None)
-        if techs_data is not None:
-            instance.techsAssigned.add(techs_data)
+                models.SpareDetail.objects.create(defect=defect, **spare_data)
+        # # Handle techsAssigned
+        # techs_data = validated_data.pop('techsAssigned', None)
+        # if techs_data is not None:
+        #     instance.techsAssigned.add(techs_data)
 
         # Update the rest of the data
-        Defect.objects.filter(id=instance.id).update(**validated_data)
+        models.Defect.objects.filter(id=instance.id).update(**validated_data)
 
         # Non of the updates here call the .save() method, if we use a post_save
         # signal, include the following line to trigger the signals at the end
