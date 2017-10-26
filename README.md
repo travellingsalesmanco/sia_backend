@@ -60,15 +60,19 @@ APIs
 ---------
 
 `GET /gettech?id=<id>`          Get technician's profile
+
 `GET /getuser?id=<id>`          Get planner/supervisor's profile
 
 `GET /defects`                  Get all defects
+
 `GET /techs                     Get all technicians
 
 `GET /tech?id=<id>`             Get technician's profile from id (similar to `gettech`)
+
 `GET /defect?id=<id>`           Get defect information from id
 
 `GET /techdefects?id=<id>`      Get defects under technician (identified by id)
+
 `GET /techhistory?id=<id>`      Get last 10 completed defects under technician (identified by id)
 
 
