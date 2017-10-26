@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 from django.http import Http404
+from django.conf import settings
+from django.utils import timezone
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -113,6 +115,8 @@ class CreateOrUpdateDefect(APIView):
         serializer = s.InputDefectSerializer(defect, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
+            if defect.closed == True:
+                defect.dateResolved = timezone.now
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
