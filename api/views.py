@@ -101,7 +101,7 @@ class CreateOrUpdateDefect(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    def put(self, request, pk, format=None):
+    def patch(self, request, pk, format=None):
         defect = self.get_object(pk)
         serializer = s.InputDefectSerializer(defect, data=request.data)
         if serializer.is_valid():

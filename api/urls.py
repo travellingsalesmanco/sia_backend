@@ -23,6 +23,6 @@ urlpatterns = [
     url(r'^addupdate', api_views.AddUpdate.as_view(), name='addupdate'),
     url(r'^assigntech$', api_views.AssignTechnician.as_view(), name='assigntech'),
 
-#PUT REQUESTS
+#PATCH REQUESTS
     url(r'^updatedefect/(?P<pk>[0-9]+)$', api_views.CreateOrUpdateDefect.as_view(), name='updatedefect'),
 ]
