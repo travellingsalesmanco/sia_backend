@@ -65,14 +65,18 @@ APIs
 
 `GET /techs`                    Get all technicians
 
-`GET /tech/<technician-id>`     Get single technician's profile
+`GET/PUT/PATCH /tech/<technician-id>`     Get single technician's profile
 
-`GET /defect/<defect-id>`       Get single defect detail
+`GET/PUT/PATCH/DELETE /defect/<defect-id>`       Get single defect detail
+
+```
+GET: For getting single technician or defect
+PATCH: For editing same level fields such as `closed`, `priority`, `description` (send through form)
+```
 
 `GET /techdefects?id=<id>`      Get defects under technician (identified by id)
 
 `GET /techhistory?id=<id>`      Get last 10 completed defects under technician (identified by id)
-
 
 `POST /createdefect`            Post new defect
 ```
@@ -81,11 +85,6 @@ header
 classCode
 category
 plane
-```
-
-`PATCH /tech/<technician-id>`      Patch (update) existing defect (identified by id)
-```
-For editing same level fields such as `closed`, `priority`, `description`
 ```
 
 `PUT/DELETE /techassign/<defect-id>`       Add or delete techs assigned to defect (identified by id)
