@@ -71,7 +71,7 @@ class AllDefects(APIView):
 class TechnicianDefects(APIView):
     def get(self, request, format=None):
         username = request.query_params.get('id')
-        queryset = m.Profile.objects.get(user=username).defectsAssigned.filter(closed=False)
+        queryset = m.Profile.objects.get(user=username).defectsAssigned.filter(closed=False).order_by('priority', 'dateReported')
         serialised_query = s.OutputDefectSerializer(queryset, many=True)
         return Response(serialised_query.data)
 
