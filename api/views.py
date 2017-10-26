@@ -139,7 +139,7 @@ class AddOrRemoveTechnician(APIView):
         return Response({'received data': request.data})
     def delete(self, request, pk, format=None):
         # Remove the relation
-        defect = self.get_object(pk)
+        defect = self.get_defect(pk)
         technician = self.get_technician(request.data.get('id'))
         defect.techsAssigned.remove(technician)
         defect.save()
