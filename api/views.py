@@ -15,19 +15,19 @@ import datetime
 
 
 ###------------------------------ PROFILE VIEWS --------------------------------------------------------------------####
-#Request with username
+#Request with id
 class TechnicianProfile(APIView):
     def get(self, request, format=None):
-        username = request.query_params.get('username')
-        queryset = m.Profile.objects.get(user__username=username)
+        username = request.query_params.get('id')
+        queryset = m.Profile.objects.get(id=username)
         serialised_query = s.TechnicianSerializer(queryset)
         return Response(serialised_query.data)
 
-#Request with username
+#Request with id
 class OtherProfile(APIView):
     def get(self, request, format=None):
-        username = request.query_params.get('username')
-        queryset = m.Profile.objects.get(user__username=username)
+        username = request.query_params.get('id')
+        queryset = m.Profile.objects.get(id=username)
         serialised_query = s.ProfileSerializer(queryset)
         return Response(serialised_query.data)
 
@@ -35,8 +35,8 @@ class OtherProfile(APIView):
 #Request with id
 class TechProfilefromID(APIView):
     def get(self, request, format=None):
-        username = request.query_params.get('username')
-        queryset = m.Profile.objects.get(user__username=username)
+        username = request.query_params.get('id')
+        queryset = m.Profile.objects.get(id=username)
         serialised_query = s.TechnicianSerializer(queryset)
         return Response(serialised_query.data)
 
@@ -63,25 +63,14 @@ class AllDefects(APIView):
         return Response(serialised_query.data)
 
 
-# class AssignTechnician(APIView):
-#     def post(self, request, format=None):
-#         username = request.data.get('username')
-#         defect_id = request.data.get('id')
-#         Technician = Profile.objects.get(user__username=username)
-#         Defect = Profile.objects.get(id=defect_id)
-#         Defect.techsAssigned.add(Technician)
-#         Defect.save()
-#         return Response({'received data': request.data})
-
-
 # ------------------------------- TECHNICIAN APIS -------------------------------------------------------------##
 
 
 #Request with username, return all defects associated with username
 class TechnicianDefects(APIView):
     def get(self, request, format=None):
-        username = request.query_params.get('username')
-        queryset = m.Profile.objects.get(user__username=username).defectsAssigned.filter(closed=False)
+        username = request.query_params.get('id')
+        queryset = m.Profile.objects.get(id=username).defectsAssigned.filter(closed=False)
         serialised_query = s.DefectSerializer(queryset, many=True)
         return Response(serialised_query.data)
 
@@ -116,8 +105,30 @@ class UpdateDefect(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class AddUpdate(APIView):
+    def post(self, request, format=None):
+        request_data = request.data
+        serializer = s.UpdateSerializer(data={'author': request_data["id"],
+                                              'details': request_data["details"]})
+        if serializer.is_valid():
+            Defect = m.Defect.objects.get(id=request_data["id"])
+            serializer.defect.add(Defect)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class AssignTechnician(APIView):
+    def post(self, request, format=None):
+        username = request.data.get('u_id')
+        defect_id = request.data.get('d_id')
+        Technician = m.Profile.objects.get(id=username)
+        Defect = m.Defect.objects.get(id=defect_id)
+        Defect.techsAssigned.add(Technician)
+        Defect.save()
+        return Response({'received data': request.data})
 
 
 
-# class CreateRawDefect(APIView):
+
+        # class CreateRawDefect(APIView):
 #     def post(self, request, format=None):

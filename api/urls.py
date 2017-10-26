@@ -21,5 +21,7 @@ urlpatterns = [
 #POST REQUESTS
     url(r'^updatedefect$', api_views.UpdateDefect.as_view(), name='updatedefect'),
     url(r'^createdefect$', api_views.CreateDefect.as_view(), name='createdefect'),
+    url(r'^addupdate', api_views.AddUpdate.as_view(), name='addupdate'),
+    url(r'^assigntech$', api_views.AssignTechnician.as_view(), name='assigntech'),
 
 ]
