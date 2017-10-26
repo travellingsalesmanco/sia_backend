@@ -65,7 +65,7 @@ APIs
 
 `GET /defects`                  Get all defects
 
-`GET /techs                     Get all technicians
+`GET /techs`                    Get all technicians
 
 `GET /tech?id=<id>`             Get technician's profile from id (similar to `gettech`)
 
