@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render
+from django.http import Http404
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -88,9 +89,21 @@ class TechnicianDefects(APIView):
 
 #TODO: input defects (from planner) and updating of defects from all parties
 # ------------------------------ POST API -----------------------------------------------------------------------------#
-class CreateDefect(APIView):
+class CreateOrUpdateDefect(APIView):
+    def get_object(self, pk):
+        try:
+            return m.Defect.objects.get(id=pk)
+        except m.Defect.DoesNotExist:
+            raise Http404
     def post(self, request, format=None):
         serializer = s.InputDefectSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def put(self, request, pk, format=None):
+        defect = self.get_object(pk)
+        serializer = s.InputDefectSerializer(defect, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -98,12 +111,6 @@ class CreateDefect(APIView):
 
 
 class UpdateDefect(APIView):
-    def post(self, request, format=None):
-        serializer = s.InputDefectSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class AddUpdate(APIView):
     def post(self, request, format=None):
@@ -118,9 +125,9 @@ class AssignTechnician(APIView):
         username = request.data.get('u_id')
         defect_id = request.data.get('d_id')
         Technician = m.Profile.objects.get(user=username)
-        Defect = m.Defect.objects.get(id=defect_id)
-        Defect.techsAssigned.add(Technician)
-        Defect.save()
+        defect = m.Defect.objects.get(id=defect_id)
+        defect.techsAssigned.add(Technician)
+        defect.save()
         return Response({'received data': request.data})
 
 

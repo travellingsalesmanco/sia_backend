@@ -19,9 +19,10 @@ urlpatterns = [
     url(r'^techdefects$', api_views.TechnicianDefects.as_view(), name='defectinfo'),
 
 #POST REQUESTS
-    url(r'^updatedefect$', api_views.UpdateDefect.as_view(), name='updatedefect'),
-    url(r'^createdefect$', api_views.CreateDefect.as_view(), name='createdefect'),
+    url(r'^createdefect$', api_views.CreateOrUpdateDefect.as_view(), name='createdefect'),
     url(r'^addupdate', api_views.AddUpdate.as_view(), name='addupdate'),
     url(r'^assigntech$', api_views.AssignTechnician.as_view(), name='assigntech'),
 
+#PUT REQUESTS
+    url(r'^updatedefect/(?P<pk>[0-9]+)$', api_views.CreateOrUpdateDefect.as_view(), name='updatedefect'),
 ]
