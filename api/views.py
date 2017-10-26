@@ -110,8 +110,6 @@ class CreateOrUpdateDefect(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UpdateDefect(APIView):
-
 class AddUpdate(APIView):
     def post(self, request, format=None):
         serializer = s.InputUpdateSerializer(data=request.data)
