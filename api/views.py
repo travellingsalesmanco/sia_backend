@@ -97,7 +97,7 @@ class TechnicianHistory(APIView):
 #TODO: input defects (from planner) and updating of defects from all parties
 # ------------------------------ POST API -----------------------------------------------------------------------------#
 class CreateOrUpdateDefect(APIView):
-    def get_object(self, pk):
+    def get_defect(self, pk):
         try:
             return m.Defect.objects.get(id=pk)
         except m.Defect.DoesNotExist:
@@ -109,7 +109,7 @@ class CreateOrUpdateDefect(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     def patch(self, request, pk, format=None):
-        defect = self.get_object(pk)
+        defect = self.get_defect(pk)
         serializer = s.InputDefectSerializer(defect, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -157,13 +157,13 @@ class AddOrDeleteTechnician(APIView):
         except m.Update.DoesNotExist:
             raise Http404
     def put(self, request, pk, format=None):
-        defect = self.get_object(pk)
+        defect = self.get_defect(pk)
         technician = self.get_technician(request.data.get('id'))
         defect.techsAssigned.add(technician)
         defect.save()
         return Response({'received data': request.data})
     def delete(self, request, pk, format=None):
-        defect = self.get_object(pk)
+        defect = self.get_defect(pk)
         technician = self.get_technician(request.data.get('id'))
         defect.techsAssigned.remove(technician)
         defect.save()
