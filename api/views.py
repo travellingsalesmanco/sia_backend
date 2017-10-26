@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 from django.http import Http404
+from django.conf import settings
+from django.utils import timezone
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -74,13 +76,20 @@ class DefectsList(generics.ListCreateAPIView):
 class TechnicianDefects(APIView):
     def get(self, request, format=None):
         username = request.query_params.get('id')
-        queryset = m.Profile.objects.get(user=username).defectsAssigned.filter(closed=False)
+        queryset = m.Profile.objects.get(user=username).defectsAssigned.filter(closed=False).order_by('priority', 'dateReported')
+        serialised_query = s.OutputDefectSerializer(queryset, many=True)
+        return Response(serialised_query.data)
+
+class TechnicianHistory(APIView):
+    def get(self, request, format=None):
+        username = request.query_params.get('id')
+        queryset = m.Profile.objects.get(user=username).defectsAssigned.filter(closed=True).order_by('-id')[:10]
         serialised_query = s.OutputDefectSerializer(queryset, many=True)
         return Response(serialised_query.data)
 
 
 #TODO: input defects (from planner) and updating of defects from all parties
-# ------------------------------ POST API -----------------------------------------------------------------------------#
+# ------------------------------ POST API -----------------------------------------------------------------------------
 
 
 class AddOrRemoveUpdate(APIView):
@@ -123,7 +132,7 @@ class AddOrRemoveTechnician(APIView):
         except m.Update.DoesNotExist:
             raise Http404
     def put(self, request, pk, format=None):
-        defect = self.get_object(pk)
+        defect = self.get_defect(pk)
         technician = self.get_technician(request.data.get('id'))
         defect.techsAssigned.add(technician)
         defect.save()
@@ -133,6 +142,7 @@ class AddOrRemoveTechnician(APIView):
         defect = self.get_object(pk)
         technician = self.get_technician(request.data.get('id'))
         defect.techsAssigned.remove(technician)
+        defect.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

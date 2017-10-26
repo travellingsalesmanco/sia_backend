@@ -18,7 +18,8 @@ urlpatterns = [
 
     url(r'^tech/(?P<pk>[0-9]+)$', api_views.TechDetail.as_view(), name='techinfo'),
 
-    url(r'^techdefects$', api_views.TechnicianDefects.as_view(), name='defectinfo'),
+    url(r'^techdefects$', api_views.TechnicianDefects.as_view(), name='techdefects'),
+    url(r'^techhistory$', api_views.TechnicianHistory.as_view(), name='techhistory'),
 
 #POST REQUESTS
 
