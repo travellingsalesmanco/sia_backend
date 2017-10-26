@@ -13,7 +13,12 @@ class TechnicianSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     class Meta:
         model = models.Profile
-        fields = ('user', 'user_type', 'avatar', 'lon', 'lat')
+        fields = ('user', 'user_type', 'avatar', 'lon', 'lat', 'defectsAssigned')
+class InputTechnicianSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Profile
+        fields = ('user_type', 'avatar', 'lon', 'lat')
+
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
@@ -32,12 +37,10 @@ class OutputSpareDetailSerializer(serializers.ModelSerializer):
         fields = ('id', 'spare', 'quantity', 'drawn')
 
 class InputSpareDetailSerializer(serializers.ModelSerializer):
-    # Allow specification of primary key, which will mean an update to existing
-    # spare detail
-    id = serializers.IntegerField(required=False)
     class Meta:
         model = models.SpareDetail
-        fields = ('id', 'spare', 'quantity', 'drawn')
+        fields = ('spare', # Required field
+                'quantity', 'drawn')
 
 class AircraftSerializer(serializers.ModelSerializer):
     class Meta:
@@ -48,11 +51,11 @@ class UpdateSerializer(serializers.ModelSerializer):
     author = ProfileSerializer()
     class Meta:
         model = models.Update
-        fields = ('author', 'details', 'created')
+        fields = ('id', 'author', 'details', 'created')
 class InputUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Update
-        fields = ('author', 'defect', 'details', 'created')
+        fields = ('author', 'details')
 
 class OutputDefectSerializer(serializers.ModelSerializer):
     """ Full details of defects, for viewing """
@@ -69,48 +72,46 @@ class OutputDefectSerializer(serializers.ModelSerializer):
 
 class InputDefectSerializer(serializers.ModelSerializer):
     """ For processing inputs """
-    spares = InputSpareDetailSerializer(many=True)
     class Meta:
         model = models.Defect
         fields = ('header', 'classCode', 'category', 'plane', # Required fields
-                'description', #'techsAssigned',
-                'dateReported', 'dateResolved', 'closed', 'img', 'priority',
-                'spares')
+                'description', #'techsAssigned', 'spares'
+                'dateReported', 'dateResolved', 'closed', 'img', 'priority',)
 
-    def create(self, validated_data):
-        spares_data = validated_data.pop('spares')
-        defect = Defect.objects.create(**validated_data)
-        # Create the SpareDetails
-        for spare_data in spares_data:
-            SpareDetail.objects.create(defect=defect, **spare_data)
-        return defect
-
-    def update(self, instance, validated_data):
-        # Handle spares
-        spares_data = validated_data.pop('spares', None)
-        for spare_data in spares_data:
-            # If primary key is provided, edit the entry
-            pk = spare_data.get('id', None)
-            if pk is not None:
-                try:
-                    sd = models.SpareDetail.objects.get(id=pk)
-                    sd.spare = spare_data.get('spare', sd.spare)
-                    sd.quantity = spare_data.get('quantity', sd.quantity)
-                    sd.drawn = spare_data.get('drawn', sd.drawn)
-                    sd.save()
-                except ObjectDoesNotExist:
-                    print("No such spare detail.")
-            # Otherwise create a new SpareDetail
-            else:
-                models.SpareDetail.objects.create(defect=instance, **spare_data)
+    # def create(self, validated_data):
+    #     spares_data = validated_data.pop('spares')
+    #     defect = Defect.objects.create(**validated_data)
+    #     # Create the SpareDetails
+    #     for spare_data in spares_data:
+    #         SpareDetail.objects.create(defect=defect, **spare_data)
+    #     return defect
+    #
+    # def update(self, instance, validated_data):
+    #     # Handle spares
+    #     spares_data = validated_data.pop('spares', None)
+    #     for spare_data in spares_data:
+    #         # If primary key is provided, edit the entry
+    #         pk = spare_data.get('id', None)
+    #         if pk is not None:
+    #             try:
+    #                 sd = models.SpareDetail.objects.get(id=pk)
+    #                 sd.spare = spare_data.get('spare', sd.spare)
+    #                 sd.quantity = spare_data.get('quantity', sd.quantity)
+    #                 sd.drawn = spare_data.get('drawn', sd.drawn)
+    #                 sd.save()
+    #             except ObjectDoesNotExist:
+    #                 print("No such spare detail.")
+    #         # Otherwise create a new SpareDetail
+    #         else:
+    #             models.SpareDetail.objects.create(defect=instance, **spare_data)
         # # Handle techsAssigned
         # techs_data = validated_data.pop('techsAssigned', None)
         # if techs_data is not None:
         #     instance.techsAssigned.add(techs_data)
 
         # Update the rest of the data
-        models.Defect.objects.filter(id=instance.id).update(**validated_data)
-        return instance
+        # models.Defect.objects.filter(id=instance.id).update(**validated_data)
+        # return instance
         # Non of the updates here call the .save() method, if we use a post_save
         # signal, include the following line to trigger the signals at the end
         # of an update:
