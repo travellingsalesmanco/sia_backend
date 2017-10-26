@@ -9,6 +9,7 @@ from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import generics
 
 from api import models as m
 from api import serializers as s
@@ -19,12 +20,12 @@ import datetime
 
 ###------------------------------ PROFILE VIEWS --------------------------------------------------------------------####
 #Request with id
-class TechnicianProfile(APIView):
-    def get(self, request, format=None):
-        username = request.query_params.get('id')
-        queryset = m.Profile.objects.get(user=username)
-        serialised_query = s.TechnicianSerializer(queryset)
-        return Response(serialised_query.data)
+# class TechnicianProfile(APIView):
+#     def get(self, request, format=None):
+#         username = request.query_params.get('id')
+#         queryset = m.Profile.objects.get(user=username)
+#         serialised_query = s.TechnicianSerializer(queryset)
+#         return Response(serialised_query.data)
 
 #Request with id
 class OtherProfile(APIView):
@@ -36,34 +37,36 @@ class OtherProfile(APIView):
 
 ##------------------------------- GENERAL APIS -------------------------------------------------------------##
 #Request with id
-class TechProfilefromID(APIView):
-    def get(self, request, format=None):
-        username = request.query_params.get('id')
-        queryset = m.Profile.objects.get(user=username)
-        serialised_query = s.TechnicianSerializer(queryset)
-        return Response(serialised_query.data)
+class TechDetail(generics.RetrieveUpdateDestroyAPIView):
+    """ Retrieve or update a technician's details via GET/PUT/PATCH """
+    queryset = m.Profile.objects.filter(user_type=2)
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return s.TechnicianSerializer
+        return s.InputTechnicianSerializer
 
-#Request with id
-class DefectInfofromID(APIView):
-    def get(self, request, format=None):
-        defect_id = request.query_params.get('id')
-        queryset = m.Defect.objects.get(id=defect_id)
-        serialised_query = s.OutputDefectSerializer(queryset)
-        return Response(serialised_query.data)
-
+class DefectDetail(generics.RetrieveUpdateDestroyAPIView):
+    """ Edit or view a single defect details using GET/PUT/PATCH/DELETE """
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return s.OutputDefectSerializer
+        return s.InputDefectSerializer
+    queryset = m.Defect.objects.all()
+    # Default lookup field is primary key, default arg is pk
 #------------------------------- SUPERVISOR/PLANNER APIS -------------------------------------------------------------##
 
-class TechnicianList(APIView):
-    def get(self, request, format=None):
-        queryset = m.Profile.objects.filter(user_type=2)
-        serialised_query = s.TechnicianSerializer(queryset, many=True)
-        return Response(serialised_query.data)
+class TechnicianList(generics.ListAPIView):
+    """ GET list of technicians """
+    queryset = m.Profile.objects.filter(user_type=2)
+    serializer_class = s.TechnicianSerializer
 
-class AllDefects(APIView):
-    def get(self, request, format=None):
-        queryset = m.Defect.objects.filter(closed=False)
-        serialised_query = s.OutputDefectSerializer(queryset, many=True)
-        return Response(serialised_query.data)
+class DefectsList(generics.ListCreateAPIView):
+    """ List or create Defects via GET/POST """
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return s.InputDefectSerializer
+        return s.OutputDefectSerializer
+    queryset = m.Defect.objects.filter(closed=False)
 
 
 # ------------------------------- TECHNICIAN APIS -------------------------------------------------------------##
@@ -84,45 +87,12 @@ class TechnicianHistory(APIView):
         serialised_query = s.OutputDefectSerializer(queryset, many=True)
         return Response(serialised_query.data)
 
-# #Request with username, lon, lat
-# class TechUpdateLocation(APIView):
-#     def post(self, request, format=None):
-#         lon = request.data.get('lon')
-#         lat = request.data.get('lat')
-#         username = request.data.get('username')
-#         technician = Profile.objects.get(user__username=username)
-#         technician.lon = lon
-#         technician.lat = lat
-#         technician.save()
-#         return Response({'received data': request.data})
 
 #TODO: input defects (from planner) and updating of defects from all parties
-# ------------------------------ POST API -----------------------------------------------------------------------------#
-class CreateOrUpdateDefect(APIView):
-    def get_defect(self, pk):
-        try:
-            return m.Defect.objects.get(id=pk)
-        except m.Defect.DoesNotExist:
-            raise Http404
-    def post(self, request, format=None):
-        serializer = s.InputDefectSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    def patch(self, request, pk, format=None):
-        defect = self.get_defect(pk)
-        serializer = s.InputDefectSerializer(defect, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            if defect.closed == True:
-                defect.dateResolved = timezone.now()
-                defect.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# ------------------------------ POST API -----------------------------------------------------------------------------
 
 
-class AddOrDeleteUpdate(APIView):
+class AddOrRemoveUpdate(APIView):
     def get_defect(self, pk):
         try:
             return m.Defect.objects.get(id=pk)
@@ -134,23 +104,23 @@ class AddOrDeleteUpdate(APIView):
         except m.Update.DoesNotExist:
             raise Http404
     def put(self, request, pk, format=None):
-        defect = self.get_defect(pk)
         serializer = s.InputUpdateSerializer(data=request.data)
+        defect = self.get_defect(pk)
         if serializer.is_valid():
-            serializer.save()
-            defect.updates.add(serializer)
-            defect.save()
+            serializer.save(defect=defect)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     def delete(self, request, pk, format=None):
-        defect = self.get_defect(pk)
+        # Delete the entire update
+
+        #defect = self.get_defect(pk)
         update = self.get_update(request.data.get('id'))
-        defect.updates.remove(update)
-        defect.save()
+        update.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class AddOrDeleteTechnician(APIView):
+class AddOrRemoveTechnician(APIView):
+    """ Add or remove technician from a defect """
     def get_defect(self, pk):
         try:
             return m.Defect.objects.get(id=pk)
@@ -168,20 +138,21 @@ class AddOrDeleteTechnician(APIView):
         defect.save()
         return Response({'received data': request.data})
     def delete(self, request, pk, format=None):
-        defect = self.get_defect(pk)
+        # Remove the relation
+        defect = self.get_object(pk)
         technician = self.get_technician(request.data.get('id'))
         defect.techsAssigned.remove(technician)
         defect.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class AddOrDeleteSpare(APIView):
+class AddOrRemoveSpareDetail(APIView):
     def get_defect(self, pk):
         try:
             return m.Defect.objects.get(id=pk)
         except m.Defect.DoesNotExist:
             raise Http404
-    def get_spare(self, pk):
+    def get_spareDetail(self, pk):
         try:
             return m.SpareDetail.objects.get(id=pk)
         except m.Update.DoesNotExist:
@@ -190,20 +161,14 @@ class AddOrDeleteSpare(APIView):
         defect = self.get_defect(pk)
         serializer = s.InputSpareDetailSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            defect.spares.add(serializer)
-            defect.save()
+            serializer.save(defect=defect)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def delete(self, request, pk, format=None):
-        defect = self.get_defect(pk)
-        spare = self.get_spare(request.data.get('id'))
-        defect.spares.remove(spare)
-        defect.save()
+        # Delete the entire spare detail
+
+        # defect = self.get_defect(pk)
+        spareDetail = self.get_spareDetail(request.data.get('id'))
+        spareDetail.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-
-
-            # class CreateRawDefect(APIView):
-#     def post(self, request, format=None):
