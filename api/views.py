@@ -108,7 +108,7 @@ class UpdateDefect(APIView):
 class AddUpdate(APIView):
     def post(self, request, format=None):
         request_data = request.data
-        serializer = s.UpdateSerializer(data={'author': request_data["id"],
+        serializer = s.InputUpdateSerializer(data={'author': request_data["id"],
                                               'details': request_data["details"]})
         if serializer.is_valid():
             Defect = m.Defect.objects.get(id=request_data["id"])
