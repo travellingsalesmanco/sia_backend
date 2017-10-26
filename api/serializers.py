@@ -7,11 +7,10 @@ from api import models
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ('username', 'first_name', 'last_name', 'last_login')
+        fields = ('id', 'username', 'first_name', 'last_name', 'last_login')
 
 class TechnicianSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-
     class Meta:
         model = models.Profile
         fields = ('user', 'user_type', 'avatar', 'lon', 'lat')

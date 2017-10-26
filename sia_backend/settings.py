@@ -27,7 +27,7 @@ DEBUG = True
 
 # NOTE: remove the bottom 3 ALLOWED_HOSTS in deployment
 ALLOWED_HOSTS = ['db-gateway-siacabindefects.b9ad.pro-us-east-1.openshiftapps.com',
-                'localhost', '127.0.0.1', '[::1]']
+                'localhost', '127.0.0.1', '[::1]', 'testserver']
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
