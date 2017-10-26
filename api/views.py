@@ -100,7 +100,7 @@ class TechnicianDefects(APIView):
 # ------------------------------ POST API -----------------------------------------------------------------------------#
 class CreateDefect(APIView):
     def post(self, request, format=None):
-        serializer = s.DefectSerializer(data=request.data)
+        serializer = s.InputDefectSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -109,11 +109,13 @@ class CreateDefect(APIView):
 
 class UpdateDefect(APIView):
     def post(self, request, format=None):
-        serializer = s.DefectSerializer(data=request.data)
+        serializer = s.InputDefectSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 # class CreateRawDefect(APIView):
