@@ -59,17 +59,15 @@ Server Setup
 APIs
 ---------
 
-`GET /gettech?id=<id>`          Get technician's profile
-
 `GET /getuser?id=<id>`          Get planner/supervisor's profile
 
 `GET /defects`                  Get all defects
 
 `GET /techs`                    Get all technicians
 
-`GET /tech?id=<id>`             Get technician's profile from id (similar to `gettech`)
+`GET /tech/<technician-id>`     Get single technician's profile
 
-`GET /defect?id=<id>`           Get defect information from id
+`GET /defect/<defect-id>`       Get single defect detail
 
 `GET /techdefects?id=<id>`      Get defects under technician (identified by id)
 
@@ -85,36 +83,35 @@ category
 plane
 ```
 
-`PATCH /updatedefect/<id>`      Patch (update) existing defect (identified by id)
+`PATCH /tech/<technician-id>`      Patch (update) existing defect (identified by id)
 ```
 For editing same level fields such as `closed`, `priority`, `description`
 ```
 
-`PUT/DELETE /techassign/<id>`       Add or delete techs assigned to defect (identified by id)
+`PUT/DELETE /techassign/<defect-id>`       Add or delete techs assigned to defect (identified by id)
 ```
 Form:
-id  (<tech>id)
+id  (<tech-id>)
 ```
 
-`PUT/DELETE /update/<id>`       Add or delete update on defect (identified by id)
+`PUT/DELETE /update/<defect-id>`       Add or delete update on defect (identified by id)
 ```
 Form:
 (if DELETE)
-id  (<update>id)
+id  (<update-id>)
 (if PUT)
-author (<user>id)
+author (<user-id>)
 details(message)
 ```
 
-`PUT/DELETE /spare/<id>`       Add or delete spares on defect (identified by id)
+`PUT/DELETE /addsparetodefect/<defect-id>`       Add or delete spares on defect (identified by id)
 ```
 Form:
-(if DELETE or editing existing spare in defect using PUT)
-id
+(if DELETE)
+id (<spareDetail-id>)
+
 (if PUT with new spare in defect)
-spare (part id)
-quantity (quantity needed)
-drawn (True or False)
+spare (<part id>)
+quantity (quantity needed) [optional, default=1]
+drawn (True or False) [optional, default=False]
 ```
-
-
