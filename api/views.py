@@ -110,26 +110,80 @@ class CreateOrUpdateDefect(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class AddUpdate(APIView):
-    def post(self, request, format=None):
-        serializer = s.InputUpdateSerializer(data=request.data)
+class AddOrDeleteUpdate(APIView):
+    def get_defect(self, pk):
+        try:
+            return m.Defect.objects.get(id=pk)
+        except m.Defect.DoesNotExist:
+            raise Http404
+    def get_update(self, pk):
+        try:
+            return m.Update.objects.get(id=pk)
+        except m.Update.DoesNotExist:
+            raise Http404
+    def put(self, request, pk, format=None):
+        defect = self.get_defect(pk)
+        serializer = s.InputUpdateSerializer(defect, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, pk, format=None):
+        defect = self.get_defect(pk)
+        update = self.get_update(request.data.get('id'))
+        defect.updates.remove(update)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-class AssignTechnician(APIView):
-    def post(self, request, format=None):
-        username = request.data.get('u_id')
-        defect_id = request.data.get('d_id')
-        Technician = m.Profile.objects.get(user=username)
-        defect = m.Defect.objects.get(id=defect_id)
-        defect.techsAssigned.add(Technician)
+
+class AddOrDeleteTechnician(APIView):
+    def get_defect(self, pk):
+        try:
+            return m.Defect.objects.get(id=pk)
+        except m.Defect.DoesNotExist:
+            raise Http404
+    def get_technician(self, pk):
+        try:
+            return m.Profile.objects.get(user=pk)
+        except m.Update.DoesNotExist:
+            raise Http404
+    def put(self, request, pk, format=None):
+        defect = self.get_object(pk)
+        technician = self.get_technician(request.data.get('id'))
+        defect.techsAssigned.add(technician)
         defect.save()
         return Response({'received data': request.data})
+    def delete(self, request, pk, format=None):
+        defect = self.get_object(pk)
+        technician = self.get_technician(request.data.get('id'))
+        defect.techsAssigned.remove(technician)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class AddOrDeleteSpare(APIView):
+    def get_defect(self, pk):
+        try:
+            return m.Defect.objects.get(id=pk)
+        except m.Defect.DoesNotExist:
+            raise Http404
+    def get_spare(self, pk):
+        try:
+            return m.SpareDetail.objects.get(id=pk)
+        except m.Update.DoesNotExist:
+            raise Http404
+    def put(self, request, format=None):
+        serializer = s.InputSpareDetailSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, pk, format=None):
+        defect = self.get_defect(pk)
+        spare = self.get_spare(request.data.get('id'))
+        defect.spares.remove(spare)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 
 
-        # class CreateRawDefect(APIView):
+            # class CreateRawDefect(APIView):
 #     def post(self, request, format=None):
