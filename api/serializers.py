@@ -102,7 +102,7 @@ class InputDefectSerializer(serializers.ModelSerializer):
                     print("No such spare detail.")
             # Otherwise create a new SpareDetail
             else:
-                models.SpareDetail.objects.create(defect=defect, **spare_data)
+                models.SpareDetail.objects.create(defect=instance, **spare_data)
         # # Handle techsAssigned
         # techs_data = validated_data.pop('techsAssigned', None)
         # if techs_data is not None:
@@ -110,7 +110,7 @@ class InputDefectSerializer(serializers.ModelSerializer):
 
         # Update the rest of the data
         models.Defect.objects.filter(id=instance.id).update(**validated_data)
-
+        return instance
         # Non of the updates here call the .save() method, if we use a post_save
         # signal, include the following line to trigger the signals at the end
         # of an update:
