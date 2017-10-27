@@ -53,6 +53,14 @@ class DefectDetail(generics.RetrieveUpdateDestroyAPIView):
         return s.InputDefectSerializer
     queryset = m.Defect.objects.all()
     # Default lookup field is primary key, default arg is pk
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        # Add timestamp if update closed
+        if instance.closed and instance.dateResolved == None:
+            instance.dateResolved = timezone.now()
+            instance.save()
+
 #------------------------------- SUPERVISOR/PLANNER APIS -------------------------------------------------------------##
 
 class TechnicianList(generics.ListAPIView):
