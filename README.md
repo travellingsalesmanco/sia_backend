@@ -60,6 +60,7 @@ APIs
 ---------
 
 `GET /users`                    Get all profiles
+
 `GET /user/<id>`                Get planner/supervisor's profile
 
 `GET /defects`                  Get all defects
