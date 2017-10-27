@@ -6,8 +6,8 @@ from api import views as api_views
 urlpatterns = [
 #GET REQUESTS
     url(r'^auth$', drf_views.obtain_auth_token, name='auth'),
-    url(r'^getuser$', api_views.OtherProfile.as_view(), name='profile'),
-
+    url(r'^user/(?P<pk>[0-9]+)$', api_views.OtherProfileDetail.as_view(), name='profilelist'),
+    url(r'^users$', api_views.OtherProfileList.as_view(), name='profiledetail'),
 
     url(r'^defects$', api_views.DefectsList.as_view(), name='defectsList'),
     url(r'^defect/(?P<pk>[0-9]+)$', api_views.DefectDetail.as_view(), name='defectinfo'),

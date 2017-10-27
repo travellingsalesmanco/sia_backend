@@ -28,12 +28,13 @@ import datetime
 #         return Response(serialised_query.data)
 
 #Request with id
-class OtherProfile(APIView):
-    def get(self, request, format=None):
-        username = request.query_params.get('id')
-        queryset = m.Profile.objects.get(user=username)
-        serialised_query = s.ProfileSerializer(queryset)
-        return Response(serialised_query.data)
+class OtherProfileDetail(generics.RetrieveAPIView):
+    queryset = m.Profile.objects.all()
+    serializer_class = s.ProfileSerializer
+    
+class OtherProfileList(generics.ListAPIView):
+    queryset = m.Profile.objects.all()
+    serializer_class = s.ProfileSerializer
 
 ##------------------------------- GENERAL APIS -------------------------------------------------------------##
 #Request with id
