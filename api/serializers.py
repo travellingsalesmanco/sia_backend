@@ -17,8 +17,8 @@ class TechnicianSerializer(serializers.ModelSerializer):
 class InputTechnicianSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Profile
-        fields = ('user_type', 'avatar', 'lon', 'lat')
-
+        fields = ('id', 'user_type', 'avatar', 'lon', 'lat')
+        read_only_fields = ('id',)
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
@@ -39,9 +39,10 @@ class OutputSpareDetailSerializer(serializers.ModelSerializer):
 class InputSpareDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.SpareDetail
-        fields = ('spare', # Required field
+        fields = ('id',
+                'spare', # Required field
                 'quantity', 'drawn')
-
+        read_only_fields = ('id',)
 class AircraftSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Aircraft
@@ -55,8 +56,8 @@ class UpdateSerializer(serializers.ModelSerializer):
 class InputUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Update
-        fields = ('author', 'details')
-
+        fields = ('id', 'author', 'details')
+        read_only_fields = ('id',)
 class OutputDefectSerializer(serializers.ModelSerializer):
     """ Full details of defects, for viewing """
     plane = AircraftSerializer(many=False)
@@ -74,9 +75,11 @@ class InputDefectSerializer(serializers.ModelSerializer):
     """ For processing inputs """
     class Meta:
         model = models.Defect
-        fields = ('header', 'classCode', 'category', 'plane', # Required fields
+        fields = ('id',
+                'header', 'classCode', 'category', 'plane', # Required fields
                 'description', #'techsAssigned', 'spares'
                 'dateReported', 'dateResolved', 'closed', 'img', 'priority',)
+        read_only_fields = ('id',)
 
     # def create(self, validated_data):
     #     spares_data = validated_data.pop('spares')
