@@ -59,7 +59,8 @@ Server Setup
 APIs
 ---------
 
-`GET /getuser?id=<id>`          Get planner/supervisor's profile
+`GET /users`                    Get all profiles
+`GET /user/<id>`                Get planner/supervisor's profile
 
 `GET /defects`                  Get all defects
 
