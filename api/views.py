@@ -75,7 +75,7 @@ class DefectsList(generics.ListCreateAPIView):
         if self.request.method == 'POST':
             return s.InputDefectSerializer
         return s.OutputDefectSerializer
-    queryset = m.Defect.objects.filter(closed=False)
+    queryset = m.Defect.objects.filter(closed=False).order_by('priority')
 
 
 # ------------------------------- TECHNICIAN APIS -------------------------------------------------------------##
