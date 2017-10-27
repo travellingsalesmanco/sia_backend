@@ -119,7 +119,7 @@ class Defect(models.Model):
     CLASS_CODES = (
         ('economy', 'Economy'),
         ('premium', 'Premium'),
-        ('buisness', 'Buisness'),
+        ('business', 'Business'),
         ('first', 'First')
     )
     CATEGORIES = (
