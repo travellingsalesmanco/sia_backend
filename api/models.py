@@ -164,7 +164,7 @@ class Defect(models.Model):
 
     # Attribute: Priority of defect (e.g. safety item / HHQ flagged impt)
     # NOTE: 0 - low priority, 2 - high priority
-    priority = models.IntegerField(default=0)
+    priority = models.IntegerField(default=3)
 
 class Spare(models.Model):
     # Attribute: Part ID

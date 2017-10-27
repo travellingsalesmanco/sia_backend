@@ -5,9 +5,12 @@ from __future__ import unicode_literals
 from django.db import migrations
 from django.contrib.auth.hashers import make_password
 
+from django.utils import timezone as tz
 import datetime
 
+
 def populate(apps, schema_editor):
+
     User = apps.get_model("auth", "User")
     Profile = apps.get_model("api", "Profile")
     u1, c = User.objects.get_or_create(username='12', password=make_password('Passw0rd1'), first_name='John', last_name='Phua')
@@ -26,20 +29,20 @@ def populate(apps, schema_editor):
     #     Token.objects.get_or_create(user=user)
 
     Aircraft = apps.get_model("api", "Aircraft")
-    dtETA = datetime.datetime(2017, 10, 22, 16, 01)
-    dtETD = datetime.datetime(2017, 10, 22, 23, 55)
+    dtETA = tz.make_aware(datetime.datetime(2017, 10, 22, 16, 01))
+    dtETD = tz.make_aware(datetime.datetime(2017, 10, 22, 23, 55))
     a1, c = Aircraft.objects.get_or_create(regn='SWT', acType='77W', inbound='238', outbound='237', ETA=dtETA, ETD=dtETD, bay='A13/A13/C20')
-    dtETA = datetime.datetime(2017, 10, 22, 04, 32)
-    dtETD = datetime.datetime(2017, 10, 22, 13, 55)
+    dtETA = tz.make_aware(datetime.datetime(2017, 10, 22, 04, 32))
+    dtETD = tz.make_aware(datetime.datetime(2017, 10, 22, 13, 55))
     a2, c = Aircraft.objects.get_or_create(regn='SWS', acType='77W', inbound='635', outbound='634', ETA=dtETA, ETD=dtETD, bay='A10/A11/A11')
-    dtETA = datetime.datetime(2017, 10, 22, 19, 34)
-    dtETD = datetime.datetime(2017, 10, 23, 02, 25)
+    dtETA = tz.make_aware(datetime.datetime(2017, 10, 22, 19, 34))
+    dtETD = tz.make_aware(datetime.datetime(2017, 10, 23, 02, 25))
     a3, c = Aircraft.objects.get_or_create(regn='SWO', acType='77WR', inbound='831', outbound='008', ETA=dtETA, ETD=dtETD, bay='F60/-/A5')
-    dtETA = datetime.datetime(2017, 10, 22, 05, 53)
-    dtETD = datetime.datetime(2017, 10, 22, 12, 35)
+    dtETA = tz.make_aware(datetime.datetime(2017, 10, 22, 05, 53))
+    dtETD = tz.make_aware(datetime.datetime(2017, 10, 22, 12, 35))
     a4, c = Aircraft.objects.get_or_create(regn='SWN', acType='77WR', inbound='801', outbound='318', ETA=dtETA, ETD=dtETD, bay='B9/-/B9')
-    dtETA = datetime.datetime(2017, 10, 21, 06, 11)
-    dtETD = datetime.datetime(2017, 10, 22, 13, 05)
+    dtETA = tz.make_aware(datetime.datetime(2017, 10, 21, 06, 11))
+    dtETD = tz.make_aware(datetime.datetime(2017, 10, 22, 13, 05))
     a5, c = Aircraft.objects.get_or_create(regn='SWM', acType='77WR', inbound='351', outbound='866', ETA=dtETA, ETD=dtETD, bay='A5/A13/A13')
 
     Spare = apps.get_model("api", "Spare")
